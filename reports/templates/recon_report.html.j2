@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+body { font-family: Arial, sans-serif; color: #333; margin: 40px; }
+h1, h2, h3 { color: #004488; }
+.header { border-bottom: 2px solid #004488; padding-bottom: 10px; margin-bottom: 20px; }
+.stats { display: flex; justify-content: space-between; margin-bottom: 20px; }
+.stat-box { border: 1px solid #ccc; padding: 15px; width: 30%; text-align: center; border-radius: 5px; background: #f9f9f9; }
+table { width: 100%; border-collapse: collapse; margin-bottom: 30px; font-size: 12px; }
+th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+th { background-color: #f2f2f2; color: #333; }
+.high { color: white; background-color: #cc0000; padding: 2px 4px; border-radius: 3px; }
+.medium { color: white; background-color: #ff8800; padding: 2px 4px; border-radius: 3px; }
+.low { color: white; background-color: #009900; padding: 2px 4px; border-radius: 3px; }
+.tag { background: #e0e0e0; color: #333; padding: 2px 5px; border-radius: 3px; margin-right: 3px; font-size: 10px; }
+.page-break { page-break-before: always; }
+.footer { position: fixed; bottom: 0; width: 100%; text-align: center; font-size: 10px; color: #777; border-top: 1px solid #ccc; padding-top: 5px; }
+</style>
+</head>
+<body>
+
+<div class="header">
+    <h1>Recon Report: {{ program.name }}</h1>
+    <p>Platform: {{ program.platform.name if program.platform else 'N/A' }} | Scan Date: {{ date }}</p>
+    <p>Scope Summary: {{ scopes|length }} domains in scope</p>
+</div>
+
+<div class="stats">
+    <div class="stat-box"><h3>{{ total_assets }}</h3><p>Total Assets</p></div>
+    <div class="stat-box"><h3>{{ total_endpoints }}</h3><p>Total Endpoints</p></div>
+    <div class="stat-box"><h3>{{ high_priority_count }}</h3><p>High Priority Endpoints</p></div>
+</div>
+
+<h2>Section 1: Assets Discovered</h2>
+<table>
+    <thead>
+        <tr>
+            <th>Subdomain</th>
+            <th>IP Address</th>
+            <th>Status</th>
+            <th>Tech Stack</th>
+            <th>Screenshot</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for asset in assets %}
+        <tr>
+            <td>{{ asset.subdomain }}</td>
+            <td>{{ asset.resolved_ip or 'N/A' }}</td>
+            <td>{{ asset.http_status or 'N/A' }}</td>
+            <td>{{ asset.tech_stack|join(', ') if asset.tech_stack else 'N/A' }}</td>
+            <td>{% if asset.screenshot_path %}Yes{% else %}No{% endif %}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<div class="page-break"></div>
+
+<h2>Section 2: Endpoints by Risk Priority</h2>
+
+{% if high_endpoints %}
+<h3>High Priority <span class="high">HIGH</span></h3>
+<table>
+    <thead><tr><th>URL</th><th>Method</th><th>Params</th><th>Tags</th><th>Discovered Via</th></tr></thead>
+    <tbody>
+        {% for ep in high_endpoints %}
+        <tr>
+            <td>{{ ep.url }}</td>
+            <td>{{ ep.method }}</td>
+            <td>{{ ep.params|join(', ') if ep.params else '' }}</td>
+            <td>{% for tag in ep.test_tags or [] %}<span class="tag">{{ tag }}</span>{% endfor %}</td>
+            <td>{{ ep.discovered_via }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endif %}
+
+{% if medium_endpoints %}
+<h3>Medium Priority <span class="medium">MEDIUM</span></h3>
+<table>
+    <thead><tr><th>URL</th><th>Method</th><th>Params</th><th>Tags</th><th>Discovered Via</th></tr></thead>
+    <tbody>
+        {% for ep in medium_endpoints %}
+        <tr>
+            <td>{{ ep.url }}</td>
+            <td>{{ ep.method }}</td>
+            <td>{{ ep.params|join(', ') if ep.params else '' }}</td>
+            <td>{% for tag in ep.test_tags or [] %}<span class="tag">{{ tag }}</span>{% endfor %}</td>
+            <td>{{ ep.discovered_via }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endif %}
+
+{% if low_endpoints %}
+<h3>Low Priority <span class="low">LOW</span></h3>
+<table>
+    <thead><tr><th>URL</th><th>Method</th><th>Params</th><th>Tags</th><th>Discovered Via</th></tr></thead>
+    <tbody>
+        {% for ep in low_endpoints %}
+        <tr>
+            <td>{{ ep.url }}</td>
+            <td>{{ ep.method }}</td>
+            <td>{{ ep.params|join(', ') if ep.params else '' }}</td>
+            <td>{% for tag in ep.test_tags or [] %}<span class="tag">{{ tag }}</span>{% endfor %}</td>
+            <td>{{ ep.discovered_via }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endif %}
+
+<div class="page-break"></div>
+
+<h2>Section 3: Suggested Test Plan</h2>
+<ul>
+{% for tag in tag_counts.keys() %}
+    {% if tag in tag_descriptions %}
+    <li><strong>{{ tag }}:</strong> {{ tag_descriptions[tag] }}</li>
+    {% endif %}
+{% endfor %}
+</ul>
+
+<div class="footer">
+    Recon performed on in-scope assets only per program scope as of {{ date }}
+</div>
+
+</body>
+</html>

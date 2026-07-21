@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #1a1a1a; color: #f0f0f0; }
+        .container { padding: 20px; }
+        .header { background-color: #333; padding: 10px; font-size: 20px; color: #fff; margin-bottom: 20px; }
+        .content { margin-top: 20px; }
+        .btn { display: inline-block; padding: 10px 20px; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">Recon Report for {{ program_name }}</div>
+        <div class="content">
+            <p>Assets: {{ stats.assets }}, Endpoints: {{ stats.endpoints }}, High Priority: {{ stats.high_priority }}</p>
+            <h3>Findings</h3>
+            <ul>
+                {% for finding in findings %}
+                <li>{{ finding }}</li>
+                {% endfor %}
+            </ul>
+            <p><em>PDF report attached.</em></p>
+            <a href="{{ dashboard_url }}" class="btn">View on Dashboard</a>
+        </div>
+    </div>
+</body>
+</html>

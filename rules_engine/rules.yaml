@@ -1,0 +1,63 @@
+rules:
+  - name: open_redirect_param
+    match_params: ["redirect","return","url","next","dest","continue"]
+    tag: "open_redirect"
+    priority: medium
+  - name: ssrf_param
+    match_params: ["url","uri","path","target","dest","webhook","callback"]
+    tag: "ssrf"
+    priority: high
+  - name: idor_numeric_id
+    match_params_regex: "^(id|user_id|uid|account_id|order_id)$"
+    param_value_is_numeric: true
+    tag: "idor"
+    priority: high
+  - name: file_upload
+    match_path_contains: ["upload","file","import","attachment"]
+    tag: "file_upload_rce"
+    priority: high
+  - name: sql_injectable_param
+    match_params: ["id","search","query","q","filter","sort","order"]
+    tag: "sqli_candidate"
+    priority: medium
+  - name: xxe_candidate
+    match_content_type: ["application/xml","text/xml"]
+    tag: "xxe"
+    priority: medium
+  - name: graphql_endpoint
+    match_path_contains: ["/graphql","/gql"]
+    tag: "graphql_introspection"
+    priority: high
+  - name: admin_panel
+    match_path_contains: ["/admin","/manage","/dashboard","/internal"]
+    tag: "auth_bypass_candidate"
+    priority: high
+  - name: api_key_leak_candidate
+    match_content_contains_patterns: true
+    tag: "secret_exposure"
+    priority: high
+  - name: cors_misconfig_candidate
+    is_api_endpoint: true
+    tag: "cors_misconfig"
+    priority: low
+  - name: jwt_usage
+    match_header_or_param: ["token","jwt","authorization"]
+    tag: "jwt_vuln_candidate"
+    priority: medium
+  - name: file_path_param
+    match_params: ["file","path","doc","template","page"]
+    tag: "lfi_candidate"
+    priority: high
+  - name: outdated_wordpress
+    match_tech: ["wordpress"]
+    tech_version_check: true
+    tag: "cve_check_wordpress"
+    priority: medium
+  - name: exposed_git
+    match_path_exact: ["/.git/config","/.git/HEAD"]
+    tag: "source_disclosure"
+    priority: high
+  - name: exposed_env_file
+    match_path_exact: ["/.env",".env.local",".env.production"]
+    tag: "secret_exposure"
+    priority: high

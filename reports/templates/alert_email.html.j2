@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #1a1a1a; color: #f0f0f0; }
+        .container { padding: 20px; }
+        .header { background-color: #333; padding: 10px; font-size: 20px; color: #fff; }
+        .content { margin-top: 20px; }
+        .btn { display: inline-block; padding: 10px 20px; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">Bug Bounty Alert: {{ program_name }}</div>
+        <div class="content">
+            <p>Platform: {{ platform }}</p>
+            <p>Alert Type: {{ diff_type }}</p>
+            <p>Changes:</p>
+            <pre>{{ diff_detail | tojson(indent=2) }}</pre>
+            <br>
+            <a href="{{ dashboard_url }}" class="btn">View on Dashboard</a>
+        </div>
+    </div>
+</body>
+</html>
