@@ -25,7 +25,7 @@ export const useLiveUpdates = () => {
           if (data.type === 'NEW_PROGRAM') {
             toast.success(`New program added: ${data.name}`);
           } else if (data.type === 'SCOPE_UPDATE') {
-            toast.info(`Scope updated for ${data.name}`);
+            toast(`Scope updated for ${data.name}`);
           }
         } catch (e) {
           console.error('WebSocket message parsing failed', e);
