@@ -7,7 +7,7 @@ export const useLiveUpdates = () => {
 
   useEffect(() => {
     let ws: WebSocket;
-    let reconnectTimer: NodeJS.Timeout;
+    let reconnectTimer: ReturnType<typeof setTimeout>;
     let backoff = 1000;
 
     const connect = () => {
