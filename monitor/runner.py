@@ -78,9 +78,22 @@ def poll_all_platforms():
                 raw_programs = connector.fetch_all_programs()
 
                 for raw_program in raw_programs:
-                    external_id = str(
-                        raw_program.get('id') or raw_program.get('handle', '')
-                    )
+                    # HackerOne JSON:API: handle is in attributes, needed for scope endpoint
+                    attrs = raw_program.get('attributes', {})
+                    if platform.name.lower() == 'hackerone':
+                        handle = attrs.get('handle', '')
+                        external_id = handle
+                        program_name = attrs.get('name', handle)
+                        program_url = f"https://hackerone.com/{handle}"
+                        offers_bounty = attrs.get('offers_bounties', True)
+                    else:
+                        external_id = str(
+                            raw_program.get('id') or raw_program.get('handle', '')
+                        )
+                        program_name = raw_program.get('name', external_id)
+                        program_url = raw_program.get('url', '')
+                        offers_bounty = raw_program.get('offers_bounty', True)
+
                     if not external_id:
                         continue
 
@@ -123,9 +136,9 @@ def poll_all_platforms():
                             existing_program = Program(
                                 platform_id=platform.id,
                                 external_id=external_id,
-                                name=raw_program.get('name', external_id),
-                                url=raw_program.get('url', ''),
-                                offers_bounty=raw_program.get('offers_bounty', True),
+                                name=program_name,
+                                url=program_url,
+                                offers_bounty=offers_bounty,
                                 scope_hash=new_scope_hash,
                                 raw_scope_json=raw_scope,
                                 last_change_type='new',
