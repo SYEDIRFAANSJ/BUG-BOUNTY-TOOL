@@ -4,6 +4,7 @@ sqlalchemy>=2.0
 psycopg2-binary
 alembic
 pydantic[email]
+email-validator
 celery[redis]>=5.4
 redis>=5.0
 httpx
@@ -12,6 +13,7 @@ tenacity
 structlog
 python-jose[cryptography]
 passlib[bcrypt]
+bcrypt==4.0.1
 slowapi
 weasyprint
 jinja2
