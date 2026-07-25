@@ -8,7 +8,7 @@ class BugcrowdConnector(PlatformConnector):
     def __init__(self, rate_limiter: TokenBucketRateLimiter):
         super().__init__(rate_limiter)
         self.headers = {
-            "Authorization": f"Token {settings.BUGCROWD_API_TOKEN}",
+            "Authorization": f"Token {settings.bugcrowd_api_token}",
             "Accept": "application/vnd.bugcrowd+json"
         }
         self.base_url = "https://api.bugcrowd.com"

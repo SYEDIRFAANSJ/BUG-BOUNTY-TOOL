@@ -7,7 +7,7 @@ from shared.config import settings
 class HackerOneConnector(PlatformConnector):
     def __init__(self, rate_limiter: TokenBucketRateLimiter):
         super().__init__(rate_limiter)
-        self.auth = (settings.H1_API_USERNAME, settings.H1_API_TOKEN)
+        self.auth = (settings.h1_api_username, settings.h1_api_token)
         self.base_url = "https://api.hackerone.com/v1"
 
     @retry(stop=stop_after_attempt(4), wait=wait_exponential(multiplier=1, min=2, max=30))

@@ -8,7 +8,7 @@ class IntigritiConnector(PlatformConnector):
     def __init__(self, rate_limiter: TokenBucketRateLimiter):
         super().__init__(rate_limiter)
         self.headers = {
-            "Authorization": f"Bearer {settings.INTIGRITI_PAT}"
+            "Authorization": f"Bearer {settings.intigriti_api_token}"
         }
         self.base_url = "https://api.intigriti.com/external/researcher"
 

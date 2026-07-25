@@ -57,6 +57,17 @@ def poll_all_platforms():
                 logger.warning("circuit_open_skipping", platform=platform.name)
                 continue
 
+            # Skip platforms without configured API credentials
+            if platform.name.lower() == 'hackerone' and not settings.h1_api_username:
+                logger.info("skipping_platform_no_credentials", platform=platform.name)
+                continue
+            if platform.name.lower() == 'bugcrowd' and not settings.bugcrowd_api_token:
+                logger.info("skipping_platform_no_credentials", platform=platform.name)
+                continue
+            if platform.name.lower() == 'intigriti' and not settings.intigriti_api_token:
+                logger.info("skipping_platform_no_credentials", platform=platform.name)
+                continue
+
             connector = get_connector(platform)
             if not connector:
                 logger.error("no_connector", platform=platform.name)
