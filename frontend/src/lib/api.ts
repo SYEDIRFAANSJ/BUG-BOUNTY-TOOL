@@ -23,7 +23,7 @@ api.interceptors.response.use(
   }
 );
 
-export const getPrograms = (filters?: any) => api.get('/programs', { params: filters });
+export const getPrograms = (filters?: any) => api.get('/programs/', { params: { limit: 200, ...filters } });
 export const getProgram = (id: string) => api.get(`/programs/${id}`);
 export const getProgramAssets = (id: string) => api.get(`/programs/${id}/assets`);
 export const getProgramEndpoints = (id: string, filters?: any) => api.get(`/programs/${id}/endpoints`, { params: filters });

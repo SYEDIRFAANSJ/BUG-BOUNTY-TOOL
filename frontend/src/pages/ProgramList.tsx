@@ -17,12 +17,27 @@ export const ProgramList = () => {
     refetchInterval: 60000,
   });
 
-  const programs = response?.items || [];
+  const programs = (response?.programs || []).map((p: any) => ({
+    ...p,
+    platform: p.platform?.name || 'unknown',
+    bounty_status: p.offers_bounty ? '💰 Yes' : 'No',
+    assets_count: p.assets_count || 0,
+    isNew: p.last_change_type === 'new',
+  }));
   
   const filteredPrograms = programs.filter((p: any) => 
     p.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
     (statusFilter ? p.status === statusFilter : true)
   );
+
+  const totalPrograms = response?.total || programs.length;
+  const newThisWeek = programs.filter((p: any) => {
+    const firstSeen = new Date(p.first_seen);
+    const weekAgo = new Date();
+    weekAgo.setDate(weekAgo.getDate() - 7);
+    return firstSeen >= weekAgo;
+  }).length;
+  const scopeChanges = programs.filter((p: any) => p.last_change_type === 'scope_changed').length;
 
   const columns = [
     { 
@@ -61,10 +76,10 @@ export const ProgramList = () => {
     <div className="space-y-6 fade-in">
       {/* Stats Row */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <StatsCard label="Total Programs" value={programs.length} trend={{ value: 12, isPositive: true }} />
-        <StatsCard label="New This Week" value="5" trend={{ value: 2, isPositive: true }} />
-        <StatsCard label="Scope Changes" value="14" trend={{ value: 8, isPositive: false }} />
-        <StatsCard label="High-Risk Findings" value="3" trend={{ value: 10, isPositive: false }} />
+        <StatsCard label="Total Programs" value={totalPrograms} trend={{ value: 12, isPositive: true }} />
+        <StatsCard label="New This Week" value={newThisWeek} trend={{ value: 2, isPositive: true }} />
+        <StatsCard label="Scope Changes" value={scopeChanges} trend={{ value: 8, isPositive: false }} />
+        <StatsCard label="Bounty Programs" value={programs.filter((p: any) => p.offers_bounty).length} trend={{ value: 10, isPositive: true }} />
       </div>
 
       {/* Filter Bar */}
