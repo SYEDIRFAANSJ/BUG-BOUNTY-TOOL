@@ -29,8 +29,9 @@ export const ProgramDetail = () => {
   });
 
   const program = programRes;
-  const inScope = program?.scopes?.filter((s: any) => s.eligibility_for_bounty || s.is_in_scope) || [];
-  const outOfScope = program?.scopes?.filter((s: any) => !s.eligibility_for_bounty && !s.is_in_scope) || [];
+  const platformName = program?.platform?.name || program?.platform || '';
+  const inScope = program?.scopes?.filter((s: any) => s.in_scope) || [];
+  const outOfScope = program?.scopes?.filter((s: any) => !s.in_scope) || [];
 
   return (
     <div className="space-y-6 fade-in">
@@ -39,8 +40,8 @@ export const ProgramDetail = () => {
         <div>
           <div className="flex items-center gap-3 mb-2">
             <h1 className="text-3xl font-bold text-white tracking-tight">{program?.name || 'Loading...'}</h1>
-            {program?.platform && (
-              <Badge label={program.platform} type="default" />
+            {platformName && (
+              <Badge label={platformName} type="default" />
             )}
           </div>
           <a href={program?.url} target="_blank" rel="noopener noreferrer" className="text-cyber-cyan hover:text-cyber-cyan/80 text-sm flex items-center gap-1 transition-colors">
